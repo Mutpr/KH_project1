@@ -91,7 +91,6 @@ public class BoardDAO {
 				try(ResultSet rs = pstat.getGeneratedKeys();){
 					rs.next();
 					int seq = rs.getInt(1);
-					System.out.println("ddfdf"+seq);
 					return seq;
 				}
 			}
@@ -190,15 +189,15 @@ public class BoardDAO {
 //	    			+ "left join(select boardseq, count(*) as reply_count from reply where isDeleted != 'y' group by boardseq) "
 //	    			+ "	reply_count on board.seq = reply_count.boardseq "
 //	    			+ "where board.rown between ? and ?";	
-			String sql = "    SELECT board.*, NVL(reply_count, 0) AS reply_count \r\n"
-					+ " 		                   FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown \r\n"
-					+ " 		                   FROM board \r\n"
-					+ " 		                   ) board \r\n"
-					+ " 		             LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count \r\n"
-					+ " 		                        FROM reply where isDeleted !='y' \r\n"
-					+ " 		                        GROUP BY boardseq) reply_count \r\n"
-					+ " 		             ON board.seq = reply_count.boardseq \r\n"
-					+ " 		             WHERE board.rown BETWEEN ? AND ?";
+			String sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count \r\n"
+					+ "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown \r\n"
+					+ "FROM board \r\n"
+					+ ") board \r\n"
+					+ "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count \r\n"
+					+ "FROM reply where isDeleted !='y' \r\n"
+					+ "GROUP BY boardseq) reply_count \r\n"
+					+ "ON board.seq = reply_count.boardseq \r\n"
+					+ "WHERE board.rown BETWEEN ? AND ?";
 	    	try(Connection con = this.getConnection();
 	    			PreparedStatement pstat = con.prepareStatement(sql)){
 	    		pstat.setInt(1, a);
@@ -233,38 +232,38 @@ public class BoardDAO {
 
  		    switch (option) {
  		        case "title":
- 		        	sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count " +
- 		                   "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown " +
- 		                   "FROM board " +
- 		                   "WHERE title LIKE ?) board " +
- 		             "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count " +
- 		                        "FROM reply where isDeleted !='y' " +
- 		                        "GROUP BY boardseq) reply_count " +
- 		             "ON board.seq = reply_count.boardseq " +
+ 		        	sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count \r\n" +
+ 		                   "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown \r\n" +
+ 		                   "FROM board \r\n" +
+ 		                   "WHERE title LIKE ?) board \r\n" +
+ 		             "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count \r\n" +
+ 		                        "FROM reply where isDeleted !='y' \r\n" +
+ 		                        "GROUP BY boardseq) reply_count \r\n" +
+ 		             "ON board.seq = reply_count.boardseq \r\n" +
  		             "WHERE board.rown BETWEEN ? AND ?";
  		           // sql = "select * from (select board.*, row_number() over(order by seq desc) rown from board where title like ?) subquery where rown between ? and ?";
  		            break;
  		        case "writer":
- 		        	sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count " +
- 		                   "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown " +
- 		                   "FROM board " +
- 		                   "WHERE writer LIKE ?) board " +
- 		             "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count " +
- 		                        "FROM reply where isDeleted !='y' " +
- 		                        "GROUP BY boardseq) reply_count " +
- 		             "ON board.seq = reply_count.boardseq " +
+ 		        	sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count \r\n" +
+ 		                   "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown \r\n" +
+ 		                   "FROM board \r\n" +
+ 		                   "WHERE writer LIKE ?) board \r\n" +
+ 		             "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count \r\n" +
+ 		                        "FROM reply where isDeleted !='y' \r\n" +
+ 		                        "GROUP BY boardseq) reply_count \r\n" +
+ 		             "ON board.seq = reply_count.boardseq \r\n" +
  		             "WHERE board.rown BETWEEN ? AND ?";
  		            //sql = "select * from (select board.*, row_number() over(order by seq desc) rown from board where writer like ?) subquery where rown between ? and ?";
  		            break;
  		        case "title_writer":
- 		        	sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count " +
- 		                   "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown " +
- 		                   "FROM board " +
- 		                   "WHERE title LIKE ? or writer like ?) board " +
- 		             "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count " +
- 		                        "FROM reply where isDeleted !='y'" +
- 		                        "GROUP BY boardseq) reply_count " +
- 		             "ON board.seq = reply_count.boardseq " +
+ 		        	sql = "SELECT board.*, NVL(reply_count, 0) AS reply_count \r\n" +
+ 		                   "FROM (SELECT board.*, row_number() OVER (ORDER BY board.seq DESC) AS rown \r\n" +
+ 		                   "FROM board \r\n" +
+ 		                   "WHERE title LIKE ? or writer like ?) board \r\n" +
+ 		             "LEFT JOIN (SELECT boardseq, COUNT(*) AS reply_count \r\n" +
+ 		                        "FROM reply where isDeleted !='y' \r\n" +
+ 		                        "GROUP BY boardseq) reply_count \r\n" +
+ 		             "ON board.seq = reply_count.boardseq \r\n" +
  		             "WHERE board.rown BETWEEN ? AND ?";
  		          //  sql = "select * from (select board.*, row_number() over(order by seq desc) rown from board where title like ? OR writer like ?) subquery where rown between ? and ?";
  		            break;
